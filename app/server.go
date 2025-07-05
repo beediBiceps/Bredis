@@ -42,7 +42,7 @@ func handleClient(conn net.Conn){
 		}
 		fmt.Println("Received data:",string(data))
 
-		err:=client.Write(data)
+		err=client.Write(data)
 		if err!= nil{
 			fmt.Println("Error writing to connection:",err)
 			return
