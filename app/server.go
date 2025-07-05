@@ -16,6 +16,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	conn := []net.Conn{}
+
 	go func() {
 		for {
 			conn, err := l.Accept()
@@ -23,21 +25,20 @@ func main() {
 				fmt.Println("Error accepting connection: ", err.Error())
 				os.Exit(1)
 			}
+			conn = append(conn, conn)
 		}
 	}()
 
 	for {
-		if err != nil {
-			fmt.Println("Error accepting connection: ", err.Error())
-			continue
-		}
-		buff := make([]byte, 1024)
-		_, err = conn.Read(buff)
-		if err != nil {
-			fmt.Println("Error reading input: ", err.Error())
-			continue
-		}
+		for _, c := range conn {
+			buff := make([]byte, 1024)
+			_, err = c.Read(buff)
+			if err != nil {
+				fmt.Println("Error reading input: ", err.Error())
+				continue
+			}
 
-		conn.Write([]byte("+PONG\r\n"))
+			c.Write([]byte("+PONG\r\n"))
+		}
 	}
 }
