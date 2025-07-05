@@ -6,39 +6,67 @@ import (
 	"os"
 )
 
-func main() {
-	// You can use print statements as follows for debugging, they'll be visible when running tests.
+
+type ClientConn struct{
+	conn net.Conn
+}
+
+func NewClientConn(conn net.Conn) *ClientConn{
+	return &ClientConn{conn: conn}
+}
+
+
+func (c *ClientConn) Read() ([]byte, error) {
+	buff := make([]byte, 1024)
+	n, err := c.conn.Read(buff)
+	if err != nil {
+		return nil, err
+	}
+	return buff[:n], nil
+}
+
+func (c *ClientConn) Write(data []byte) error {
+	_, err := c.conn.Write(data)
+	return err
+}
+
+func handleClient(conn net.Conn){
+	defer conn.Close()
+	client:=NewClientConn(conn)
+
+	for{
+		data,err:=client.Read()
+		if err!= nil{
+			fmt.Println("Error reading from connection:",err)
+			return
+		}
+		fmt.Println("Received data:",string(data))
+
+		err:=client.Write(data)
+		if err!= nil{
+			fmt.Println("Error writing to connection:",err)
+			return
+		}
+	}
+}
+
+func main(){
 	fmt.Println("Logs from your program will appear here!")
 
-	l, err := net.Listen("tcp", "0.0.0.0:6379")
-	if err != nil {
-		fmt.Println("Failed to bind to port 6379")
+	l,err:=net.Listen("tcp",":6379")
+	if err!= nil{
+		fmt.Println("Error listening on port 6379:",err)
 		os.Exit(1)
 	}
 
-	connArr := make([]net.Conn, 0)
+	fmt.Println("Server started on port 6379")
 
-	go func() {
-		for {
-			conn, err := l.Accept()
-			if err != nil {
-				fmt.Println("Error accepting connection: ", err.Error())
-				os.Exit(1)
-			}
-			connArr = append(connArr, conn)
+	for{
+		conn,err:=l.Accept()
+		if err!= nil{
+			fmt.Println("Error accepting connection:",err)
+			continue
 		}
-	}()
-
-	for {
-		for _, c := range connArr {
-			buff := make([]byte, 1024)
-			_, err = c.Read(buff)
-			if err != nil {
-				fmt.Println("Error reading input: ", err.Error())
-				continue
-			}
-
-			c.Write([]byte("+PONG\r\n"))
-		}
+		go handleClient(conn)
 	}
 }
