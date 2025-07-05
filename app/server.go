@@ -4,14 +4,11 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"io"
 )
 
 func main() {
 	// You can use print statements as follows for debugging, they'll be visible when running tests.
 	fmt.Println("Logs from your program will appear here!")
-
-
 
 	l, err := net.Listen("tcp", "0.0.0.0:6379")
 	if err != nil {
@@ -24,17 +21,17 @@ func main() {
 		fmt.Println("Error accepting connection: ", err.Error())
 		os.Exit(1)
 	}
-	for{
-		input, err := conn.Read()
+
+	buf := make([]byte, 1024)
+	for {
+		n, err := conn.Read(buf)
 		if err != nil {
 			fmt.Println("Error reading from connection: ", err.Error())
 			os.Exit(1)
 		}
-		fmt.Println("Received: ", string(input))
-		if string(input) == "PING\r\n" {
+		fmt.Println("Received: ", string(buf[:n]))
+		if string(buf[:n]) == "PING\r\n" {
 			conn.Write([]byte("+PONG\r\n"))
 		}
 	}
-	
-
 }
