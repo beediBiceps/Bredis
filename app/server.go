@@ -5,8 +5,10 @@ import (
 	"net"
 	"os"
 	"strings"
+	"commands"
 )
 
+var registry = commands.NewCommandRegistry()
 
 type ClientConn struct{
 	conn net.Conn
@@ -43,7 +45,12 @@ func handleClient(conn net.Conn){
 		}
 		fmt.Println("Received data:",string(data))
 
-		err=client.Write([]byte("+PONG\r\n"))
+		response, err := registry.ExecuteCommand(string(data), []string{})
+		if err != nil {
+			fmt.Println("Error executing command:",err)
+			return
+		}
+		err=client.Write([]byte(response))
 		if err!= nil{
 			fmt.Println("Error writing to connection:",err)
 			return
