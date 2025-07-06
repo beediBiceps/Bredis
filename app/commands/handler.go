@@ -13,6 +13,8 @@ func NewCommandHandler() *CommandHandler {
 	r := &CommandHandler{cmds: make(map[string]Command)}
 	r.Register(&PingCommand{})
 	r.Register(&EchoCommand{})
+    r.Register(&SetCommand{})
+    r.Register(&GetCommand{})
 	return r
 }
 
