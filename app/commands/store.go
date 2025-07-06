@@ -5,7 +5,7 @@ type Store struct{
 }
 
 func NewStore() *Store{
-    return &Store{store:make(map[string]string)}
+    return &Store{store:make(map[string]string, 0)}
 }
 
 func (s *Store) Set(key string, value string) error{
