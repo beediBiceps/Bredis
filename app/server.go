@@ -6,9 +6,10 @@ import (
 	"os"
 	"strings"
 	"commands"
+	"utils"
 )
 
-var registry = commands.NewCommandRegistry()
+var registry = commands.handler.NewCommandHandler()
 
 type ClientConn struct{
 	conn net.Conn
@@ -44,8 +45,14 @@ func handleClient(conn net.Conn){
 			return
 		}
 		fmt.Println("Received data:",string(data))
+		parsedData, err := utils.parseRESP(string(data))
+		if err != nil {
+			fmt.Println("Error parsing data:",err)
+			return
+		}
+		fmt.Println("Parsed data:",parsedData)
 
-		response, err := registry.ExecuteCommand(string(data), []string{})
+		response, err := registry.ExecuteCommand(parsedData, []string{})
 		if err != nil {
 			fmt.Println("Error executing command:",err)
 			return
