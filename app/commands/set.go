@@ -3,7 +3,7 @@ package commands
 import "fmt"
 
 type SetCommand struct{
-    store Store
+    store *Store
 }
 
 func (s *SetCommand) Name() string {
