@@ -1,13 +1,14 @@
 package commands
 
-import "strings"
-
 type EchoCommand struct{}
 
-func (c *EchoCommand) Name() string {
-	return "echo"
+func (e *EchoCommand) Name() string {
+	return "ECHO"
 }
 
-func (c *EchoCommand) Execute(args []string) (string, error) {
-	return strings.Join(args, " "), nil
+func (e *EchoCommand) Execute(args []string) (string, error) {
+	if len(args) == 0 {
+		return "-ERR wrong number of arguments for 'echo' command\r\n", nil
+	}
+	return "+" + args[0] + "\r\n", nil
 }

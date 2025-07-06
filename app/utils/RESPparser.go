@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func parseRESP(input string) (interface{}, error) {
+func ParseRESP(input string) (interface{}, error) {
 	reader := bufio.NewReader(strings.NewReader(input))
 	return parse(reader)
 }
@@ -20,8 +20,14 @@ func parse(reader *bufio.Reader) (interface{}, error) {
 
 	switch prefix {
 	case '*':
-		line, _ := reader.ReadString('\n')
-		count, _ := strconv.Atoi(strings.TrimSpace(line))
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			return nil, err
+		}
+		count, err := strconv.Atoi(strings.TrimSpace(line))
+		if err != nil {
+			return nil, err
+		}
 		if count == -1 {
 			return nil, nil
 		}
@@ -36,28 +42,43 @@ func parse(reader *bufio.Reader) (interface{}, error) {
 		return items, nil
 
 	case '$':
-		line, _ := reader.ReadString('\n')
-		length, _ := strconv.Atoi(strings.TrimSpace(line))
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			return nil, err
+		}
+		length, err := strconv.Atoi(strings.TrimSpace(line))
+		if err != nil {
+			return nil, err
+		}
 		if length == -1 {
 			return nil, nil
 		}
 		buf := make([]byte, length+2)
-		_, err := reader.Read(buf)
+		_, err = reader.Read(buf)
 		if err != nil {
 			return nil, err
 		}
 		return string(buf[:length]), nil
 
 	case '+':
-		line, _ := reader.ReadString('\n')
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			return nil, err
+		}
 		return strings.TrimSpace(line), nil
 
-	case ':': 
-		line, _ := reader.ReadString('\n')
+	case ':':
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			return nil, err
+		}
 		return strconv.Atoi(strings.TrimSpace(line))
 
-	case '-': 
-		line, _ := reader.ReadString('\n')
+	case '-':
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			return nil, err
+		}
 		return nil, fmt.Errorf("Redis error: %s", strings.TrimSpace(line))
 
 	default:

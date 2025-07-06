@@ -18,7 +18,6 @@ func NewClientConn(conn net.Conn) *ClientConn{
 	return &ClientConn{conn: conn}
 }
 
-
 func (c *ClientConn) Read() ([]byte, error) {
 	buff := make([]byte, 1024)
 	n, err := c.conn.Read(buff)
@@ -35,30 +34,47 @@ func (c *ClientConn) Write(data []byte) error {
 
 func handleClient(conn net.Conn){
 	defer conn.Close()
-	client:=NewClientConn(conn)
+	client := NewClientConn(conn)
 
 	for{
-		data,err:=client.Read()
-		if err!= nil{
-			fmt.Println("Error reading from connection:",err)
-			return
-		}
-		fmt.Println("Received data:",string(data))
-		parsedData, err := utils.parseRESP(string(data))
+		data, err := client.Read()
 		if err != nil {
-			fmt.Println("Error parsing data:",err)
+			fmt.Println("Error reading from connection:", err)
 			return
 		}
-		fmt.Println("Parsed data:",parsedData)
+		fmt.Println("Received data:", string(data))
+		
+		parsedData, err := utils.ParseRESP(string(data))
+		if err != nil {
+			fmt.Println("Error parsing data:", err)
+			return
+		}
+		fmt.Println("Parsed data:", parsedData)
 
-		response, err := registry.ExecuteCommand(parsedData, []string{})
-		if err != nil {
-			fmt.Println("Error executing command:",err)
-			return
+		var response string
+		if parsedArray, ok := parsedData.([]interface{}); ok && len(parsedArray) > 0 {
+			if cmdName, ok := parsedArray[0].(string); ok {
+				args := make([]string, len(parsedArray)-1)
+				for i := 1; i < len(parsedArray); i++ {
+					if arg, ok := parsedArray[i].(string); ok {
+						args[i-1] = arg
+					}
+				}
+				response, err = registry.ExecuteCommand(cmdName, args)
+				if err != nil {
+					fmt.Println("Error executing command:", err)
+					response = "-ERR " + err.Error() + "\r\n"
+				}
+			} else {
+				response = "-ERR Invalid command format\r\n"
+			}
+		} else {
+			response = "-ERR Invalid command format\r\n"
 		}
-		err=client.Write([]byte(response))
-		if err!= nil{
-			fmt.Println("Error writing to connection:",err)
+
+		err = client.Write([]byte(response))
+		if err != nil {
+			fmt.Println("Error writing to connection:", err)
 			return
 		}
 	}
@@ -67,18 +83,18 @@ func handleClient(conn net.Conn){
 func main(){
 	fmt.Println("Logs from your program will appear here!")
 
-	l,err:=net.Listen("tcp",":6379")
-	if err!= nil{
-		fmt.Println("Error listening on port 6379:",err)
+	l, err := net.Listen("tcp", ":6379")
+	if err != nil {
+		fmt.Println("Error listening on port 6379:", err)
 		os.Exit(1)
 	}
 
 	fmt.Println("Server started on port 6379")
 
 	for{
-		conn,err:=l.Accept()
-		if err!= nil{
-			fmt.Println("Error accepting connection:",err)
+		conn, err := l.Accept()
+		if err != nil {
+			fmt.Println("Error accepting connection:", err)
 			continue
 		}
 		go handleClient(conn)
