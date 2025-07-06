@@ -5,11 +5,12 @@ import (
 	"net"
 	"os"
 	"strings"
-	"commands"
-	"utils"
+
+	"github.com/codecrafters-io/redis-starter-go/app/commands"
+	"github.com/codecrafters-io/redis-starter-go/app/utils"
 )
 
-var registry = commands.handler.NewCommandHandler()
+var registry = commands.NewCommandHandler()
 
 type ClientConn struct{
 	conn net.Conn
