@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"strings"
-
 	"github.com/codecrafters-io/redis-starter-go/app/commands"
 	"github.com/codecrafters-io/redis-starter-go/app/utils"
 )
