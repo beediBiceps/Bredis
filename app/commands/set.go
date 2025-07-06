@@ -14,8 +14,7 @@ func (s *SetCommand) Execute(args []string) (string, error) {
     if len(args) != 2 {
         return "", fmt.Errorf("wrong number of arguments for 'set' command")
     }
-
-    if 
+    fmt.Println(args)
     s.store.Set(args[0], args[1])
     return "+OK\r\n", nil
 }
