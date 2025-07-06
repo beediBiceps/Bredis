@@ -8,6 +8,6 @@ func (c *EchoCommand) Name() string {
 	return "echo"
 }
 
-func (c *EchoCommand) Execute(args []string) string {
-	return strings.Join(args, " ")
+func (c *EchoCommand) Execute(args []string) (string, error) {
+	return strings.Join(args, " "), nil
 }
