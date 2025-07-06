@@ -51,12 +51,9 @@ func handleClient(conn net.Conn){
 		}
 		fmt.Println("Parsed data:", parsedData)
 
-		// Handle the parsed data correctly
 		var response string
 		if parsedArray, ok := parsedData.([]interface{}); ok && len(parsedArray) > 0 {
-			// Extract command name
 			if cmdName, ok := parsedArray[0].(string); ok {
-				// Extract arguments
 				args := make([]string, len(parsedArray)-1)
 				for i := 1; i < len(parsedArray); i++ {
 					if arg, ok := parsedArray[i].(string); ok {
