@@ -11,6 +11,7 @@ func (s *SetCommand) Name() string {
 }
 
 func (s *SetCommand) Execute(args []string) (string, error) {
+    fmt.Println(args)
     if len(args) != 2 {
         return "", fmt.Errorf("wrong number of arguments for 'set' command")
     }

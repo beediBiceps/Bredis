@@ -14,6 +14,7 @@ type Store struct{
     store map[string]*StoreItem
     mutex sync.RWMutex
 }
+
 func NewStore() *Store{
     return &Store{store: make(map[string]*StoreItem)}
 }
