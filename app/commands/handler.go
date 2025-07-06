@@ -5,11 +5,6 @@ import (
 	"strings"
 )
 
-type Command interface {
-	Name() string
-	Execute(args []string) (string, error)
-}
-
 type CommandHandler struct {
 	cmds map[string]Command
 }
