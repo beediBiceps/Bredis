@@ -11,10 +11,11 @@ type CommandHandler struct {
 
 func NewCommandHandler() *CommandHandler {
 	r := &CommandHandler{cmds: make(map[string]Command)}
+	store := NewStore()
 	r.Register(&PingCommand{})
 	r.Register(&EchoCommand{})
-    r.Register(&SetCommand{})
-    r.Register(&GetCommand{})
+	r.Register(&SetCommand{store: store})
+	r.Register(&GetCommand{store: store})
 	return r
 }
 
