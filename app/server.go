@@ -1,9 +1,11 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net"
 	"os"
+	"strconv"
 	"github.com/codecrafters-io/redis-starter-go/app/commands"
 	"github.com/codecrafters-io/redis-starter-go/app/utils"
 )
@@ -83,13 +85,19 @@ func handleClient(conn net.Conn){
 func main(){
 	fmt.Println("Logs from your program will appear here!")
 
-	l, err := net.Listen("tcp", ":6379")
+	var port int 
+	flag.IntVar(&port, "port", 6379, "Port to listen on")
+	flag.Parse()
+
+	addr:=":"+strconv.Itoa(port)
+
+	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		fmt.Println("Error listening on port 6379:", err)
+		fmt.Println("Error listening on port ", addr, ":", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Server started on port 6379")
+	fmt.Println("Server started on port ", addr)
 
 	for{
 		conn, err := l.Accept()
