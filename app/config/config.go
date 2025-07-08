@@ -4,14 +4,6 @@ import "sync"
 
 type ClusterInfo struct{
     role string
-    connectedSlaves int
-    masterReplID string
-    masterReplOffset int64
-    secondReplOffset int64
-    replBacklogActive int
-    replBacklogSize int64
-    replBacklogFirstByteOffset int64
-    replBacklogHistlen int64
 }
 
 
@@ -42,14 +34,6 @@ func GetConfig() *ServerConfig {
 func NewClusterInfo() *ClusterInfo {
 	return &ClusterInfo{
 		role:                      "master",
-		connectedSlaves:           0,
-		masterReplID:              "",
-		masterReplOffset:          0,
-		secondReplOffset:          0,
-		replBacklogActive:         0,
-		replBacklogSize:           0,
-		replBacklogFirstByteOffset: 0,
-		replBacklogHistlen:        0,
 	}
 }
 
