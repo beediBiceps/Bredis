@@ -9,6 +9,7 @@ import (
 	"github.com/codecrafters-io/redis-starter-go/app/commands"
 	"github.com/codecrafters-io/redis-starter-go/app/utils"
 )
+type ClusterInfo map[string]string
 
 var registry = commands.NewCommandHandler()
 
@@ -45,6 +46,7 @@ func handleClient(conn net.Conn){
 			return
 		}
 		fmt.Println("Received data:", string(data))
+
 		
 		parsedData, err := utils.ParseRESP(string(data))
 		if err != nil {
@@ -84,11 +86,11 @@ func handleClient(conn net.Conn){
 
 func main(){
 	fmt.Println("Logs from your program will appear here!")
-
 	var port int 
 	flag.IntVar(&port, "port", 6379, "Port to listen on")
 	flag.Parse()
-
+	clusterInfo := make(ClusterInfo)
+	clusterInfo["master"] = strconv.Itoa(port)
 	addr:=":"+strconv.Itoa(port)
 
 	l, err := net.Listen("tcp", addr)
