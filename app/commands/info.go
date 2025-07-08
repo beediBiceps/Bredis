@@ -19,9 +19,10 @@ func (i *InfoCommand) Execute(args []string) (string, error) {
 		return "-ERR Server not properly initialized\r\n", nil
 	}
 
-	clusterInfo := cfg.GetClusterInfo()
 	role := cfg.GetRole()
 	
+
 	response := fmt.Sprintf("# Replication\r\nrole:%s\r\n", role)
+
 	return "+" + response + "\r\n", nil
 }
