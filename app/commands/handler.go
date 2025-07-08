@@ -16,6 +16,7 @@ func NewCommandHandler() *CommandHandler {
 	r.Register(&EchoCommand{})
 	r.Register(&SetCommand{store: store})
 	r.Register(&GetCommand{store: store})
+	r.Register(&InfoCommand{})
 	return r
 }
 

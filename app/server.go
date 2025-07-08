@@ -8,8 +8,9 @@ import (
 	"strconv"
 	"github.com/codecrafters-io/redis-starter-go/app/commands"
 	"github.com/codecrafters-io/redis-starter-go/app/utils"
+	"github.com/codecrafters-io/redis-starter-go/app/config"
 )
-type ClusterInfo map[string]string
+var ClusterConfig := config.NewClusterInfo()
 
 var registry = commands.NewCommandHandler()
 
@@ -89,9 +90,13 @@ func main(){
 	var port int 
 	flag.IntVar(&port, "port", 6379, "Port to listen on")
 	flag.Parse()
-	clusterInfo := make(ClusterInfo)
-	clusterInfo["master"] = strconv.Itoa(port)
+
 	addr:=":"+strconv.Itoa(port)
+	if _, exists := ClusterConfig[addr]; !exists {
+		ClusterConfig[addr] = config.NewClusterInfo()
+		ClusterConfig[addr].role = "master"
+	}
+	
 
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
