@@ -14,15 +14,13 @@ func (i *InfoCommand) Name() string {
 
 func (i *InfoCommand) Execute(args []string) (string, error) {
 	cfg := config.GetConfig()
-	
-	if cfg == nil {
+    if cfg == nil {
 		return "-ERR Server not properly initialized\r\n", nil
 	}
-
-	role := cfg.GetRole()
-	
-
-	response := fmt.Sprintf("# Replication\r\nrole:%s\r\n", role)
-
+    response := ""
+	if args[0] == "replication"{
+		role := cfg.GetRole()
+        response := fmt.Sprintf("# Replication\r\nrole:%s\r\n", role)
+	}
 	return "+" + response + "\r\n", nil
 }
