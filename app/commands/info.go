@@ -20,7 +20,7 @@ func (i *InfoCommand) Execute(args []string) (string, error) {
     response := ""
 	if args[0] == "replication"{
 		role := cfg.GetRole()
-        response := fmt.Sprintf("# Replication\r\nrole:%s\r\n", role)
+        response = fmt.Sprintf("# Replication\r\nrole:%s\r\n", role)
 	}
 	return "+" + response + "\r\n", nil
 }
