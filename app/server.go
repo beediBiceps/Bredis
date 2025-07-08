@@ -10,7 +10,9 @@ import (
 	"github.com/codecrafters-io/redis-starter-go/app/utils"
 	"github.com/codecrafters-io/redis-starter-go/app/config"
 )
-var ClusterConfig := config.NewClusterInfo()
+
+// Fixed: Use = instead of := for global variable declaration
+var ClusterConfig = config.NewClusterInfo()
 
 var registry = commands.NewCommandHandler()
 
@@ -48,7 +50,6 @@ func handleClient(conn net.Conn){
 		}
 		fmt.Println("Received data:", string(data))
 
-		
 		parsedData, err := utils.ParseRESP(string(data))
 		if err != nil {
 			fmt.Println("Error parsing data:", err)
@@ -91,16 +92,17 @@ func main(){
 	flag.IntVar(&port, "port", 6379, "Port to listen on")
 	flag.Parse()
 
-	port:=":"+strconv.Itoa(port)
-	config.Initialize(port)
+	// Fixed: Use different variable name to avoid confusion
+	addr := ":" + strconv.Itoa(port)
+	config.Initialize(port, addr)
 
-	l, err := net.Listen("tcp", port)
+	l, err := net.Listen("tcp", addr)
 	if err != nil {
-		fmt.Println("Error listening on port ", port, ":", err)
+		fmt.Println("Error listening on port", addr, ":", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Server started on port ", port)
+	fmt.Println("Server started on port", addr)
 
 	for{
 		conn, err := l.Accept()
