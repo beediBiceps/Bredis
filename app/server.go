@@ -11,7 +11,6 @@ import (
 	"github.com/codecrafters-io/redis-starter-go/app/config"
 )
 
-// Fixed: Use = instead of := for global variable declaration
 var ClusterConfig = config.NewClusterInfo()
 
 var registry = commands.NewCommandHandler()
@@ -92,9 +91,8 @@ func main(){
 	flag.IntVar(&port, "port", 6379, "Port to listen on")
 	flag.Parse()
 
-	// Fixed: Use different variable name to avoid confusion
 	addr := ":" + strconv.Itoa(port)
-	config.Initialize(port, addr)
+	config.Initialize(port)
 
 	l, err := net.Listen("tcp", addr)
 	if err != nil {
