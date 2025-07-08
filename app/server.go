@@ -91,20 +91,16 @@ func main(){
 	flag.IntVar(&port, "port", 6379, "Port to listen on")
 	flag.Parse()
 
-	addr:=":"+strconv.Itoa(port)
-	if _, exists := ClusterConfig[addr]; !exists {
-		ClusterConfig[addr] = config.NewClusterInfo()
-		ClusterConfig[addr].role = "master"
-	}
-	
+	port:=":"+strconv.Itoa(port)
+	config.Initialize(port)
 
-	l, err := net.Listen("tcp", addr)
+	l, err := net.Listen("tcp", port)
 	if err != nil {
-		fmt.Println("Error listening on port ", addr, ":", err)
+		fmt.Println("Error listening on port ", port, ":", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Server started on port ", addr)
+	fmt.Println("Server started on port ", port)
 
 	for{
 		conn, err := l.Accept()
